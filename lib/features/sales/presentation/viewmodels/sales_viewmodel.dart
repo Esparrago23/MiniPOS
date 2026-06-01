@@ -3,13 +3,22 @@ import 'package:app_prueba/features/products/domain/usecases/find_product_by_bar
 import 'package:flutter/foundation.dart';
 
 import '../../domain/entities/sale_cart_item.dart';
+import '../../domain/entities/sale.dart';
 import '../../domain/entities/sale_summary.dart';
 import '../../domain/usecases/add_product_to_sale_usecase.dart';
 import '../../domain/usecases/calculate_sale_summary_usecase.dart';
+import '../../domain/usecases/create_sale_usecase.dart';
 import '../../domain/usecases/remove_sale_item_usecase.dart';
 import '../../domain/usecases/update_sale_item_quantity_usecase.dart';
 
-enum SalesStatus { initial, loadingProduct, ready, error }
+enum SalesStatus {
+  initial,
+  loadingProduct,
+  ready,
+  savingSale,
+  completed,
+  error,
+}
 
 class SalesViewModel extends ChangeNotifier {
   SalesViewModel({
@@ -18,6 +27,7 @@ class SalesViewModel extends ChangeNotifier {
     required this.updateSaleItemQuantityUseCase,
     required this.removeSaleItemUseCase,
     required this.calculateSaleSummaryUseCase,
+    required this.createSaleUseCase,
   });
 
   final FindProductByBarcodeUseCase findProductByBarcodeUseCase;
@@ -25,17 +35,21 @@ class SalesViewModel extends ChangeNotifier {
   final UpdateSaleItemQuantityUseCase updateSaleItemQuantityUseCase;
   final RemoveSaleItemUseCase removeSaleItemUseCase;
   final CalculateSaleSummaryUseCase calculateSaleSummaryUseCase;
+  final CreateSaleUseCase createSaleUseCase;
 
   SalesStatus _status = SalesStatus.initial;
   List<SaleCartItem> _items = [];
   Product? _lastScannedProduct;
+  Sale? _lastCompletedSale;
   String? _errorMessage;
 
   SalesStatus get status => _status;
   List<SaleCartItem> get items => List.unmodifiable(_items);
   Product? get lastScannedProduct => _lastScannedProduct;
+  Sale? get lastCompletedSale => _lastCompletedSale;
   String? get errorMessage => _errorMessage;
   bool get isLoadingProduct => _status == SalesStatus.loadingProduct;
+  bool get isSavingSale => _status == SalesStatus.savingSale;
   bool get hasItems => _items.isNotEmpty;
   SaleSummary get summary => calculateSaleSummaryUseCase(_items);
 
@@ -110,9 +124,30 @@ class SalesViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
+  Future<bool> submitSale() async {
+    _status = SalesStatus.savingSale;
+    _errorMessage = null;
+    notifyListeners();
+
+    try {
+      final sale = await createSaleUseCase(_items);
+      _items = [];
+      _lastScannedProduct = null;
+      _lastCompletedSale = sale;
+      _status = SalesStatus.completed;
+      _errorMessage = null;
+      notifyListeners();
+      return true;
+    } catch (error) {
+      _setError(error);
+      return false;
+    }
+  }
+
   void clearSale() {
     _items = [];
     _lastScannedProduct = null;
+    _lastCompletedSale = null;
     _status = SalesStatus.initial;
     _errorMessage = null;
     notifyListeners();

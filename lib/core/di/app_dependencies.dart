@@ -21,6 +21,10 @@ import 'package:app_prueba/features/products/domain/usecases/update_product_usec
 import 'package:app_prueba/features/products/presentation/viewmodels/products_viewmodel.dart';
 import 'package:app_prueba/features/sales/domain/usecases/add_product_to_sale_usecase.dart';
 import 'package:app_prueba/features/sales/domain/usecases/calculate_sale_summary_usecase.dart';
+import 'package:app_prueba/features/sales/data/datasources/remote/sale_remote_datasource.dart';
+import 'package:app_prueba/features/sales/data/repositories/sale_repository_impl.dart';
+import 'package:app_prueba/features/sales/domain/repositories/sale_repository.dart';
+import 'package:app_prueba/features/sales/domain/usecases/create_sale_usecase.dart';
 import 'package:app_prueba/features/sales/domain/usecases/remove_sale_item_usecase.dart';
 import 'package:app_prueba/features/sales/domain/usecases/update_sale_item_quantity_usecase.dart';
 import 'package:app_prueba/features/sales/presentation/viewmodels/sales_viewmodel.dart';
@@ -57,6 +61,11 @@ class AppDependencies {
       updateProductUseCase: UpdateProductUseCase(productRepository),
       deleteProductUseCase: DeleteProductUseCase(productRepository),
     );
+    saleRemoteDataSource = SaleRemoteDataSource(apiClient: apiClient);
+    saleRepository = SaleRepositoryImpl(
+      remoteDataSource: saleRemoteDataSource,
+      tokenStorage: tokenStorage,
+    );
     salesViewModel = SalesViewModel(
       findProductByBarcodeUseCase: FindProductByBarcodeUseCase(
         productRepository,
@@ -65,6 +74,7 @@ class AppDependencies {
       updateSaleItemQuantityUseCase: const UpdateSaleItemQuantityUseCase(),
       removeSaleItemUseCase: const RemoveSaleItemUseCase(),
       calculateSaleSummaryUseCase: const CalculateSaleSummaryUseCase(),
+      createSaleUseCase: CreateSaleUseCase(saleRepository),
     );
   }
 
@@ -78,6 +88,8 @@ class AppDependencies {
   late final ProductRemoteDataSource productRemoteDataSource;
   late final ProductRepository productRepository;
   late final ProductsViewModel productsViewModel;
+  late final SaleRemoteDataSource saleRemoteDataSource;
+  late final SaleRepository saleRepository;
   late final SalesViewModel salesViewModel;
 
   void dispose() {

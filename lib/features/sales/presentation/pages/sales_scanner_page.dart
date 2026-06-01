@@ -2,12 +2,15 @@ import 'dart:async';
 
 import 'package:app_prueba/core/hardware/camera/barcode_scanner_service.dart';
 import 'package:app_prueba/features/products/domain/entities/product.dart';
+import 'package:app_prueba/features/products/presentation/pages/product_form_page.dart';
 import 'package:flutter/material.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:provider/provider.dart';
 
 import '../viewmodels/sales_viewmodel.dart';
 import '../widgets/sale_total_bar.dart';
+
+enum _MissingProductAction { register, continueScanning }
 
 class SalesScannerPage extends StatefulWidget {
   const SalesScannerPage({super.key, required this.scannerService});
@@ -22,6 +25,7 @@ class _SalesScannerPageState extends State<SalesScannerPage> {
   late final MobileScannerController _controller;
   bool _isHandlingScan = false;
   bool _isClosing = false;
+  String? _ignoredBarcode;
 
   @override
   void initState() {
@@ -45,6 +49,14 @@ class _SalesScannerPageState extends State<SalesScannerPage> {
       return;
     }
 
+    if (barcode == _ignoredBarcode) {
+      return;
+    }
+
+    if (_ignoredBarcode != null && barcode != _ignoredBarcode) {
+      _ignoredBarcode = null;
+    }
+
     await _processBarcode(barcode);
   }
 
@@ -65,8 +77,9 @@ class _SalesScannerPageState extends State<SalesScannerPage> {
     }
 
     if (product == null) {
-      _showMessage(viewModel.errorMessage ?? 'Producto no encontrado.');
+      await _handleMissingProduct(barcode, viewModel);
     } else {
+      _ignoredBarcode = null;
       await _showProductPreview(product);
     }
 
@@ -79,6 +92,73 @@ class _SalesScannerPageState extends State<SalesScannerPage> {
     }
 
     _isHandlingScan = false;
+  }
+
+  Future<void> _handleMissingProduct(
+    String barcode,
+    SalesViewModel viewModel,
+  ) async {
+    final action = await showDialog<_MissingProductAction>(
+      context: context,
+      builder: (dialogContext) {
+        return AlertDialog(
+          title: const Text('Producto no registrado'),
+          content: Text(
+            'No existe un producto con el codigo $barcode. '
+            'Puedes registrarlo ahora o continuar escaneando.',
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(
+                dialogContext,
+              ).pop(_MissingProductAction.continueScanning),
+              child: const Text('No registrar'),
+            ),
+            FilledButton(
+              onPressed: () => Navigator.of(
+                dialogContext,
+              ).pop(_MissingProductAction.register),
+              child: const Text('Registrar'),
+            ),
+          ],
+        );
+      },
+    );
+
+    if (!mounted) {
+      return;
+    }
+
+    if (action != _MissingProductAction.register) {
+      _ignoredBarcode = barcode;
+      viewModel.clearError();
+      return;
+    }
+
+    await Navigator.of(context).push(
+      MaterialPageRoute<void>(
+        builder: (_) => ProductFormPage(initialBarcode: barcode),
+      ),
+    );
+
+    if (!mounted) {
+      return;
+    }
+
+    final registeredProduct = await viewModel.findProductByBarcode(barcode);
+
+    if (!mounted) {
+      return;
+    }
+
+    if (registeredProduct == null) {
+      _ignoredBarcode = barcode;
+      _showMessage('El producto no fue registrado.');
+      return;
+    }
+
+    _ignoredBarcode = null;
+    await _showProductPreview(registeredProduct);
   }
 
   Future<void> _showProductPreview(Product product) async {

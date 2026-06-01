@@ -48,8 +48,15 @@ class SalesSummaryPage extends StatelessWidget {
           : SaleTotalBar(
               summary: summary,
               action: FilledButton.icon(
-                onPressed: () => _showPendingDataMessage(context),
-                icon: const Icon(Icons.payments_outlined),
+                onPressed: viewModel.isSavingSale
+                    ? null
+                    : () => _submitSale(context),
+                icon: viewModel.isSavingSale
+                    ? const SizedBox.square(
+                        dimension: 18,
+                        child: CircularProgressIndicator(strokeWidth: 2),
+                      )
+                    : const Icon(Icons.payments_outlined),
                 label: const Text('Cobrar'),
               ),
             ),
@@ -65,12 +72,47 @@ class SalesSummaryPage extends StatelessWidget {
     ).showSnackBar(SnackBar(content: Text(message)));
   }
 
-  void _showPendingDataMessage(BuildContext context) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Falta conectar sales/data para guardar la venta.'),
-      ),
+  Future<void> _submitSale(BuildContext context) async {
+    final viewModel = context.read<SalesViewModel>();
+    final success = await viewModel.submitSale();
+
+    if (!context.mounted) {
+      return;
+    }
+
+    if (!success) {
+      _showError(context);
+      return;
+    }
+
+    final sale = viewModel.lastCompletedSale;
+    if (sale == null) {
+      return;
+    }
+
+    await showDialog<void>(
+      context: context,
+      builder: (dialogContext) {
+        return AlertDialog(
+          title: const Text('Venta registrada'),
+          content: Text(
+            'Ticket #${sale.id}\n'
+            'Productos: ${sale.items.length}\n'
+            'Total: \$${sale.total.toStringAsFixed(2)}',
+          ),
+          actions: [
+            FilledButton(
+              onPressed: () => Navigator.of(dialogContext).pop(),
+              child: const Text('Aceptar'),
+            ),
+          ],
+        );
+      },
     );
+
+    if (context.mounted) {
+      Navigator.of(context).pop();
+    }
   }
 }
 
