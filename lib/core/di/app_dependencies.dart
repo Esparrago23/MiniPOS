@@ -1,3 +1,4 @@
+import 'package:app_prueba/core/di/hardware_module.dart';
 import 'package:app_prueba/core/network/api_client.dart';
 import 'package:app_prueba/core/network/api_endpoints.dart';
 import 'package:app_prueba/core/storage/token_storage.dart';
@@ -23,6 +24,7 @@ import 'package:http/http.dart' as http;
 class AppDependencies {
   AppDependencies() {
     _httpClient = http.Client();
+    hardwareModule = HardwareModule();
     tokenStorage = InMemoryTokenStorage();
     apiClient = ApiClient(client: _httpClient, baseUrl: ApiEndpoints.baseUrl);
     authRemoteDataSource = AuthRemoteDataSource(apiClient: apiClient);
@@ -53,6 +55,7 @@ class AppDependencies {
   }
 
   late final http.Client _httpClient;
+  late final HardwareModule hardwareModule;
   late final TokenStorage tokenStorage;
   late final ApiClient apiClient;
   late final AuthRemoteDataSource authRemoteDataSource;

@@ -1,3 +1,5 @@
+import 'package:app_prueba/core/hardware/camera/barcode_scanner_page.dart';
+import 'package:app_prueba/core/hardware/camera/barcode_scanner_service.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -45,6 +47,24 @@ class _ProductLookupPageState extends State<ProductLookupPage> {
     await _showProductActions(context, product);
   }
 
+  Future<void> _scanWithCamera() async {
+    FocusScope.of(context).unfocus();
+
+    final scannerService = context.read<BarcodeScannerService>();
+    final barcode = await Navigator.of(context).push<String>(
+      MaterialPageRoute(
+        builder: (_) => BarcodeScannerPage(scannerService: scannerService),
+      ),
+    );
+
+    if (!mounted || barcode == null || barcode.trim().isEmpty) {
+      return;
+    }
+
+    _barcodeController.text = barcode.trim();
+    await _search();
+  }
+
   @override
   Widget build(BuildContext context) {
     final viewModel = context.watch<ProductsViewModel>();
@@ -67,13 +87,13 @@ class _ProductLookupPageState extends State<ProductLookupPage> {
                 ),
                 const SizedBox(height: 16),
                 Text(
-                  'Ingresa el codigo de barras',
+                  'Busca por codigo de barras',
                   style: Theme.of(context).textTheme.headlineSmall,
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  'Mas adelante esta misma pantalla podra usar la camara.',
+                  'Escanea el codigo con la camara o ingresalo manualmente.',
                   style: Theme.of(context).textTheme.bodyMedium,
                   textAlign: TextAlign.center,
                 ),
@@ -96,6 +116,12 @@ class _ProductLookupPageState extends State<ProductLookupPage> {
                   ),
                 ],
                 const SizedBox(height: 24),
+                OutlinedButton.icon(
+                  onPressed: viewModel.isLoading ? null : _scanWithCamera,
+                  icon: const Icon(Icons.camera_alt_outlined),
+                  label: const Text('Escanear con camara'),
+                ),
+                const SizedBox(height: 12),
                 FilledButton.icon(
                   onPressed: viewModel.isLoading ? null : _search,
                   icon: viewModel.isLoading

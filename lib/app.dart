@@ -1,4 +1,5 @@
 import 'package:app_prueba/core/di/app_dependencies.dart';
+import 'package:app_prueba/core/hardware/camera/barcode_scanner_service.dart';
 import 'package:app_prueba/core/routes/app_routes.dart';
 import 'package:app_prueba/features/auth/presentation/pages/auth_home_page.dart';
 import 'package:app_prueba/features/auth/presentation/pages/login_page.dart';
@@ -45,6 +46,9 @@ class _AppState extends State<App> {
         ),
         ChangeNotifierProvider<ProductsViewModel>.value(
           value: _dependencies.productsViewModel,
+        ),
+        Provider<BarcodeScannerService>.value(
+          value: _dependencies.hardwareModule.barcodeScannerService,
         ),
       ],
       child: MaterialApp(
