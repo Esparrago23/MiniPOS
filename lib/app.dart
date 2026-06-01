@@ -8,6 +8,8 @@ import 'package:app_prueba/features/auth/presentation/viewmodels/auth_viewmodel.
 import 'package:app_prueba/features/products/presentation/pages/product_lookup_page.dart';
 import 'package:app_prueba/features/products/presentation/pages/products_page.dart';
 import 'package:app_prueba/features/products/presentation/viewmodels/products_viewmodel.dart';
+import 'package:app_prueba/features/sales/presentation/pages/sales_page.dart';
+import 'package:app_prueba/features/sales/presentation/viewmodels/sales_viewmodel.dart';
 import 'package:app_prueba/shared/theme/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -47,6 +49,9 @@ class _AppState extends State<App> {
         ChangeNotifierProvider<ProductsViewModel>.value(
           value: _dependencies.productsViewModel,
         ),
+        ChangeNotifierProvider<SalesViewModel>.value(
+          value: _dependencies.salesViewModel,
+        ),
         Provider<BarcodeScannerService>.value(
           value: _dependencies.hardwareModule.barcodeScannerService,
         ),
@@ -63,6 +68,7 @@ class _AppState extends State<App> {
           AppRoutes.home: (_) => const AuthHomePage(),
           AppRoutes.products: (_) => const ProductsPage(),
           AppRoutes.productLookup: (_) => const ProductLookupPage(),
+          AppRoutes.sales: (_) => const SalesPage(),
         },
       ),
     );

@@ -44,8 +44,8 @@ class _BarcodeScannerPageState extends State<BarcodeScannerPage> {
 
     try {
       await _controller.stop();
-    } on MobileScannerException {
-      // The code was already read, so closing the page is still correct.
+    } on MobileScannerException catch (error) {
+      debugPrint(error.toString());
     }
 
     if (mounted) {
