@@ -19,6 +19,11 @@ import 'package:app_prueba/features/products/domain/usecases/get_product_by_id_u
 import 'package:app_prueba/features/products/domain/usecases/get_products_usecase.dart';
 import 'package:app_prueba/features/products/domain/usecases/update_product_usecase.dart';
 import 'package:app_prueba/features/products/presentation/viewmodels/products_viewmodel.dart';
+import 'package:app_prueba/features/sales/domain/usecases/add_product_to_sale_usecase.dart';
+import 'package:app_prueba/features/sales/domain/usecases/calculate_sale_summary_usecase.dart';
+import 'package:app_prueba/features/sales/domain/usecases/remove_sale_item_usecase.dart';
+import 'package:app_prueba/features/sales/domain/usecases/update_sale_item_quantity_usecase.dart';
+import 'package:app_prueba/features/sales/presentation/viewmodels/sales_viewmodel.dart';
 import 'package:http/http.dart' as http;
 
 class AppDependencies {
@@ -52,6 +57,15 @@ class AppDependencies {
       updateProductUseCase: UpdateProductUseCase(productRepository),
       deleteProductUseCase: DeleteProductUseCase(productRepository),
     );
+    salesViewModel = SalesViewModel(
+      findProductByBarcodeUseCase: FindProductByBarcodeUseCase(
+        productRepository,
+      ),
+      addProductToSaleUseCase: const AddProductToSaleUseCase(),
+      updateSaleItemQuantityUseCase: const UpdateSaleItemQuantityUseCase(),
+      removeSaleItemUseCase: const RemoveSaleItemUseCase(),
+      calculateSaleSummaryUseCase: const CalculateSaleSummaryUseCase(),
+    );
   }
 
   late final http.Client _httpClient;
@@ -64,10 +78,12 @@ class AppDependencies {
   late final ProductRemoteDataSource productRemoteDataSource;
   late final ProductRepository productRepository;
   late final ProductsViewModel productsViewModel;
+  late final SalesViewModel salesViewModel;
 
   void dispose() {
     authViewModel.dispose();
     productsViewModel.dispose();
+    salesViewModel.dispose();
     _httpClient.close();
   }
 }

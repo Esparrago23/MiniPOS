@@ -57,6 +57,14 @@ class AuthHomePage extends StatelessWidget {
               const SizedBox(height: 24),
               FilledButton.icon(
                 onPressed: () {
+                  Navigator.of(context).pushNamed(AppRoutes.sales);
+                },
+                icon: const Icon(Icons.point_of_sale),
+                label: const Text('Nueva venta'),
+              ),
+              const SizedBox(height: 8),
+              OutlinedButton.icon(
+                onPressed: () {
                   Navigator.of(context).pushNamed(AppRoutes.products);
                 },
                 icon: const Icon(Icons.inventory_2_outlined),

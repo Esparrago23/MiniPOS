@@ -4,4 +4,5 @@ class AppRoutes {
   static const String home = '/home';
   static const String products = '/products';
   static const String productLookup = '/products/lookup';
+  static const String sales = '/sales';
 }
