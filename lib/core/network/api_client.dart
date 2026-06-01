@@ -23,7 +23,15 @@ class ApiClient {
       () => client.get(_uri(path), headers: _headers(token: token)),
     );
 
-    return _decodeResponse(response);
+    return _decodeMapResponse(response);
+  }
+
+  Future<List<dynamic>> getList(String path, {String? token}) async {
+    final response = await _sendRequest(
+      () => client.get(_uri(path), headers: _headers(token: token)),
+    );
+
+    return _decodeListResponse(response);
   }
 
   Future<Map<String, dynamic>> post(
@@ -39,7 +47,31 @@ class ApiClient {
       ),
     );
 
-    return _decodeResponse(response);
+    return _decodeMapResponse(response);
+  }
+
+  Future<Map<String, dynamic>> put(
+    String path, {
+    required Map<String, dynamic> body,
+    String? token,
+  }) async {
+    final response = await _sendRequest(
+      () => client.put(
+        _uri(path),
+        headers: _headers(token: token),
+        body: jsonEncode(body),
+      ),
+    );
+
+    return _decodeMapResponse(response);
+  }
+
+  Future<Map<String, dynamic>> delete(String path, {String? token}) async {
+    final response = await _sendRequest(
+      () => client.delete(_uri(path), headers: _headers(token: token)),
+    );
+
+    return _decodeMapResponse(response);
   }
 
   Future<http.Response> _sendRequest(
@@ -66,10 +98,8 @@ class ApiClient {
     return Uri.parse('$baseUrl$path');
   }
 
-  Map<String, dynamic> _decodeResponse(http.Response response) {
-    final dynamic decodedBody = response.body.isEmpty
-        ? <String, dynamic>{}
-        : jsonDecode(response.body);
+  Map<String, dynamic> _decodeMapResponse(http.Response response) {
+    final decodedBody = _decodeBody(response);
 
     if (response.statusCode >= 200 && response.statusCode < 300) {
       if (decodedBody is Map<String, dynamic>) {
@@ -79,6 +109,32 @@ class ApiClient {
       throw const ApiException('Respuesta inesperada del servidor.');
     }
 
+    _throwApiError(response, decodedBody);
+  }
+
+  List<dynamic> _decodeListResponse(http.Response response) {
+    final decodedBody = _decodeBody(response);
+
+    if (response.statusCode >= 200 && response.statusCode < 300) {
+      if (decodedBody is List<dynamic>) {
+        return decodedBody;
+      }
+
+      throw const ApiException('Respuesta inesperada del servidor.');
+    }
+
+    _throwApiError(response, decodedBody);
+  }
+
+  dynamic _decodeBody(http.Response response) {
+    final dynamic decodedBody = response.body.isEmpty
+        ? <String, dynamic>{}
+        : jsonDecode(response.body);
+
+    return decodedBody;
+  }
+
+  Never _throwApiError(http.Response response, dynamic decodedBody) {
     if (decodedBody is Map<String, dynamic> &&
         decodedBody.containsKey('detail')) {
       throw ApiException(_formatDetail(decodedBody['detail']));

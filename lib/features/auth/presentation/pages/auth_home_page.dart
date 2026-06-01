@@ -54,6 +54,22 @@ class AuthHomePage extends StatelessWidget {
                     : '${user.name}\n${user.email}',
                 textAlign: TextAlign.center,
               ),
+              const SizedBox(height: 24),
+              FilledButton.icon(
+                onPressed: () {
+                  Navigator.of(context).pushNamed(AppRoutes.products);
+                },
+                icon: const Icon(Icons.inventory_2_outlined),
+                label: const Text('Productos'),
+              ),
+              const SizedBox(height: 8),
+              OutlinedButton.icon(
+                onPressed: () {
+                  Navigator.of(context).pushNamed(AppRoutes.productLookup);
+                },
+                icon: const Icon(Icons.search),
+                label: const Text('Buscar por codigo'),
+              ),
             ],
           ),
         ),

@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import '../viewmodels/products_viewmodel.dart';
 import '../widgets/product_card.dart';
 import 'product_form_page.dart';
+import 'product_lookup_page.dart';
 
 class ProductsPage extends StatefulWidget {
   const ProductsPage({super.key});
@@ -29,6 +30,19 @@ class _ProductsPageState extends State<ProductsPage> {
       appBar: AppBar(
         title: const Text('Productos'),
         actions: [
+          IconButton(
+            tooltip: 'Buscar por codigo',
+            onPressed: viewModel.isLoading
+                ? null
+                : () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute<void>(
+                        builder: (_) => const ProductLookupPage(),
+                      ),
+                    );
+                  },
+            icon: const Icon(Icons.search),
+          ),
           IconButton(
             tooltip: 'Recargar productos',
             onPressed: viewModel.isLoading ? null : viewModel.loadProducts,

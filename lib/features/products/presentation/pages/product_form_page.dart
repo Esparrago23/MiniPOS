@@ -7,8 +7,9 @@ import '../widgets/product_text_field.dart';
 
 class ProductFormPage extends StatefulWidget {
   final Product? product;
+  final String? initialBarcode;
 
-  const ProductFormPage({super.key, this.product});
+  const ProductFormPage({super.key, this.product, this.initialBarcode});
 
   @override
   State<ProductFormPage> createState() => _ProductFormPageState();
@@ -34,6 +35,8 @@ class _ProductFormPageState extends State<ProductFormPage> {
       _priceController.text = product.price.toStringAsFixed(2);
       _stockController.text = product.stock.toString();
       _categoryController.text = product.category ?? '';
+    } else if (widget.initialBarcode != null) {
+      _barcodeController.text = widget.initialBarcode!;
     }
   }
 
