@@ -1,106 +1,75 @@
+import 'package:app_prueba/core/di/app_dependencies.dart';
+import 'package:app_prueba/core/hardware/camera/barcode_scanner_service.dart';
+import 'package:app_prueba/core/routes/app_routes.dart';
+import 'package:app_prueba/features/auth/presentation/pages/auth_home_page.dart';
+import 'package:app_prueba/features/auth/presentation/pages/login_page.dart';
+import 'package:app_prueba/features/auth/presentation/pages/register_page.dart';
+import 'package:app_prueba/features/auth/presentation/viewmodels/auth_viewmodel.dart';
+import 'package:app_prueba/features/products/presentation/pages/product_lookup_page.dart';
+import 'package:app_prueba/features/products/presentation/pages/products_page.dart';
+import 'package:app_prueba/features/products/presentation/viewmodels/products_viewmodel.dart';
+import 'package:app_prueba/features/sales/presentation/pages/sales_page.dart';
+import 'package:app_prueba/features/sales/presentation/viewmodels/sales_viewmodel.dart';
 import 'package:app_prueba/shared/theme/theme.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
-class App extends StatelessWidget {
+class App extends StatefulWidget {
   const App({super.key});
 
-  // This widget is the root of your application.
   @override
-  Widget build(BuildContext context) {
-    TextTheme textTheme = Theme.of(context).textTheme;
-    MaterialTheme theme = MaterialTheme(textTheme);
-    return MaterialApp(
-      title: 'Flutter Demo',
-      darkTheme: theme.dark(),
-      theme: theme.light(),
-      themeMode: ThemeMode.system,
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
-    );
+  State<App> createState() => _AppState();
+}
+
+class _AppState extends State<App> {
+  late final AppDependencies _dependencies;
+
+  @override
+  void initState() {
+    super.initState();
+    _dependencies = AppDependencies();
   }
-}
-
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
-
-  // This widget is the home page of your application. It is stateful, meaning
-  // that it has a State object (defined below) that contains fields that affect
-  // how it looks.
-
-  // This class is the configuration for the state. It holds the values (in this
-  // case the title) provided by the parent (in this case the App widget) and
-  // used by the build method of the State. Fields in a Widget subclass are
-  // always marked "final".
-
-  final String title;
 
   @override
-  State<MyHomePage> createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-
-  void _incrementCounter() {
-    setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-      _counter++;
-    });
+  void dispose() {
+    _dependencies.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    // This method is rerun every time setState is called, for instance as done
-    // by the _incrementCounter method above.
-    //
-    // The Flutter framework has been optimized to make rerunning build methods
-    // fast, so that you can just rebuild anything that needs updating rather
-    // than having to individually change instances of widgets.
-    return Scaffold(
-      appBar: AppBar(
-        // TRY THIS: Try changing the color here to a specific color (to
-        // Colors.amber, perhaps?) and trigger a hot reload to see the AppBar
-        // change color while the other colors stay the same.
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
-        title: Text(widget.title),
-      ),
-      body: Center(
-        // Center is a layout widget. It takes a single child and positions it
-        // in the middle of the parent.
-        child: Column(
-          // Column is also a layout widget. It takes a list of children and
-          // arranges them vertically. By default, it sizes itself to fit its
-          // children horizontally, and tries to be as tall as its parent.
-          //
-          // Column has various properties to control how it sizes itself and
-          // how it positions its children. Here we use mainAxisAlignment to
-          // center the children vertically; the main axis here is the vertical
-          // axis because Columns are vertical (the cross axis would be
-          // horizontal).
-          //
-          // TRY THIS: Invoke "debug painting" (choose the "Toggle Debug Paint"
-          // action in the IDE, or press "p" in the console), to see the
-          // wireframe for each widget.
-          mainAxisAlignment: .center,
-          children: [
-            const Text('You have pushed the button this many times:'),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headlineMedium,
-            ),
-          ],
+    final textTheme = Theme.of(context).textTheme;
+    final theme = MaterialTheme(textTheme);
+
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider<AuthViewModel>.value(
+          value: _dependencies.authViewModel,
         ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
+        ChangeNotifierProvider<ProductsViewModel>.value(
+          value: _dependencies.productsViewModel,
+        ),
+        ChangeNotifierProvider<SalesViewModel>.value(
+          value: _dependencies.salesViewModel,
+        ),
+        Provider<BarcodeScannerService>.value(
+          value: _dependencies.hardwareModule.barcodeScannerService,
+        ),
+      ],
+      child: MaterialApp(
+        title: 'Punto de Venta',
+        darkTheme: theme.dark(),
+        theme: theme.light(),
+        themeMode: ThemeMode.system,
+        initialRoute: AppRoutes.login,
+        routes: {
+          AppRoutes.login: (_) => const LoginPage(),
+          AppRoutes.register: (_) => const RegisterPage(),
+          AppRoutes.home: (_) => const AuthHomePage(),
+          AppRoutes.products: (_) => const ProductsPage(),
+          AppRoutes.productLookup: (_) => const ProductLookupPage(),
+          AppRoutes.sales: (_) => const SalesPage(),
+        },
       ),
     );
   }
