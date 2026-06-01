@@ -8,6 +8,8 @@ import '../viewmodels/products_viewmodel.dart';
 import '../widgets/product_text_field.dart';
 import 'product_form_page.dart';
 
+enum _ProductAction { addStock, edit, delete }
+
 class ProductLookupPage extends StatefulWidget {
   const ProductLookupPage({super.key});
 
@@ -179,7 +181,7 @@ class _ProductLookupPageState extends State<ProductLookupPage> {
     BuildContext context,
     Product product,
   ) async {
-    await showModalBottomSheet<void>(
+    final action = await showModalBottomSheet<_ProductAction>(
       context: context,
       showDragHandle: true,
       builder: (bottomSheetContext) {
@@ -207,22 +209,15 @@ class _ProductLookupPageState extends State<ProductLookupPage> {
                 ListTile(
                   leading: const Icon(Icons.add_box_outlined),
                   title: const Text('Agregar stock'),
-                  onTap: () async {
-                    Navigator.of(bottomSheetContext).pop();
-                    await _showAddStockDialog(context, product);
-                  },
+                  onTap: () => Navigator.of(
+                    bottomSheetContext,
+                  ).pop(_ProductAction.addStock),
                 ),
                 ListTile(
                   leading: const Icon(Icons.edit_outlined),
                   title: const Text('Editar datos'),
-                  onTap: () {
-                    Navigator.of(bottomSheetContext).pop();
-                    Navigator.of(context).push(
-                      MaterialPageRoute<void>(
-                        builder: (_) => ProductFormPage(product: product),
-                      ),
-                    );
-                  },
+                  onTap: () =>
+                      Navigator.of(bottomSheetContext).pop(_ProductAction.edit),
                 ),
                 ListTile(
                   leading: Icon(
@@ -230,10 +225,9 @@ class _ProductLookupPageState extends State<ProductLookupPage> {
                     color: Theme.of(context).colorScheme.error,
                   ),
                   title: const Text('Eliminar producto'),
-                  onTap: () async {
-                    Navigator.of(bottomSheetContext).pop();
-                    await _confirmDelete(context, product.id);
-                  },
+                  onTap: () => Navigator.of(
+                    bottomSheetContext,
+                  ).pop(_ProductAction.delete),
                 ),
               ],
             ),
@@ -241,6 +235,23 @@ class _ProductLookupPageState extends State<ProductLookupPage> {
         );
       },
     );
+
+    if (!context.mounted || action == null) {
+      return;
+    }
+
+    switch (action) {
+      case _ProductAction.addStock:
+        await _showAddStockDialog(context, product);
+      case _ProductAction.edit:
+        await Navigator.of(context).push(
+          MaterialPageRoute<void>(
+            builder: (_) => ProductFormPage(product: product),
+          ),
+        );
+      case _ProductAction.delete:
+        await _confirmDelete(context, product.id);
+    }
   }
 
   Future<void> _showAddStockDialog(
@@ -286,7 +297,8 @@ class _ProductLookupPageState extends State<ProductLookupPage> {
       return;
     }
 
-    await context.read<ProductsViewModel>().updateProduct(
+    final viewModel = context.read<ProductsViewModel>();
+    final success = await viewModel.updateProduct(
       id: product.id,
       name: product.name,
       barcode: product.barcode,
@@ -294,6 +306,18 @@ class _ProductLookupPageState extends State<ProductLookupPage> {
       stock: product.stock + quantity,
       category: product.category,
     );
+
+    if (!context.mounted) {
+      return;
+    }
+
+    final message = success
+        ? 'Stock actualizado.'
+        : viewModel.errorMessage ?? 'No se pudo actualizar el stock.';
+
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text(message)));
   }
 
   Future<void> _confirmDelete(BuildContext context, int productId) async {
