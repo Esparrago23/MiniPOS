@@ -66,8 +66,8 @@ class _SalesScannerPageState extends State<SalesScannerPage> {
 
     try {
       await _controller.stop();
-    } on MobileScannerException {
-      // The scanner might already be stopped while a dialog is open.
+    } on MobileScannerException catch (error) {
+      debugPrint(error.toString());
     }
 
     final product = await viewModel.findProductByBarcode(barcode);
@@ -306,8 +306,8 @@ class _SalesScannerPageState extends State<SalesScannerPage> {
   Future<void> _openManualEntry() async {
     try {
       await _controller.stop();
-    } on MobileScannerException {
-      // Manual entry can still continue if camera was already stopped.
+    } on MobileScannerException catch (error) {
+      debugPrint(error.toString());
     }
 
     if (!mounted) {
@@ -367,8 +367,8 @@ class _SalesScannerPageState extends State<SalesScannerPage> {
 
     try {
       await _controller.stop();
-    } on MobileScannerException {
-      // The controller might already be stopped.
+    } on MobileScannerException catch (error) {
+      debugPrint(error.toString());
     }
 
     if (mounted) {
