@@ -1,4 +1,4 @@
-import 'package:app_prueba/features/sales/domain/entities/sale_item.dart';
+import 'package:minipos/features/sales/domain/entities/sale_item.dart';
 
 class SaleItemModel extends SaleItem {
   const SaleItemModel({

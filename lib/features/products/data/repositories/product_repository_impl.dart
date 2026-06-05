@@ -1,8 +1,8 @@
-import 'package:app_prueba/core/network/api_client.dart';
-import 'package:app_prueba/core/storage/token_storage.dart';
-import 'package:app_prueba/features/products/data/datasources/remote/product_remote_datasource.dart';
-import 'package:app_prueba/features/products/domain/entities/product.dart';
-import 'package:app_prueba/features/products/domain/repositories/product_repository.dart';
+import 'package:minipos/core/network/api_client.dart';
+import 'package:minipos/core/storage/token_storage.dart';
+import 'package:minipos/features/products/data/datasources/remote/product_remote_datasource.dart';
+import 'package:minipos/features/products/domain/entities/product.dart';
+import 'package:minipos/features/products/domain/repositories/product_repository.dart';
 
 class ProductRepositoryImpl implements ProductRepository {
   final ProductRemoteDataSource remoteDataSource;

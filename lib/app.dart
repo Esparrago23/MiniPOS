@@ -1,16 +1,16 @@
-import 'package:app_prueba/core/di/app_dependencies.dart';
-import 'package:app_prueba/core/hardware/camera/barcode_scanner_service.dart';
-import 'package:app_prueba/core/routes/app_routes.dart';
-import 'package:app_prueba/features/auth/presentation/pages/auth_home_page.dart';
-import 'package:app_prueba/features/auth/presentation/pages/login_page.dart';
-import 'package:app_prueba/features/auth/presentation/pages/register_page.dart';
-import 'package:app_prueba/features/auth/presentation/viewmodels/auth_viewmodel.dart';
-import 'package:app_prueba/features/products/presentation/pages/product_lookup_page.dart';
-import 'package:app_prueba/features/products/presentation/pages/products_page.dart';
-import 'package:app_prueba/features/products/presentation/viewmodels/products_viewmodel.dart';
-import 'package:app_prueba/features/sales/presentation/pages/sales_page.dart';
-import 'package:app_prueba/features/sales/presentation/viewmodels/sales_viewmodel.dart';
-import 'package:app_prueba/shared/theme/theme.dart';
+import 'package:minipos/core/di/app_dependencies.dart';
+import 'package:minipos/core/hardware/camera/barcode_scanner_service.dart';
+import 'package:minipos/core/routes/app_routes.dart';
+import 'package:minipos/features/auth/presentation/pages/auth_home_page.dart';
+import 'package:minipos/features/auth/presentation/pages/login_page.dart';
+import 'package:minipos/features/auth/presentation/pages/register_page.dart';
+import 'package:minipos/features/auth/presentation/viewmodels/auth_viewmodel.dart';
+import 'package:minipos/features/products/presentation/pages/product_lookup_page.dart';
+import 'package:minipos/features/products/presentation/pages/products_page.dart';
+import 'package:minipos/features/products/presentation/viewmodels/products_viewmodel.dart';
+import 'package:minipos/features/sales/presentation/pages/sales_page.dart';
+import 'package:minipos/features/sales/presentation/viewmodels/sales_viewmodel.dart';
+import 'package:minipos/shared/theme/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -57,7 +57,7 @@ class _AppState extends State<App> {
         ),
       ],
       child: MaterialApp(
-        title: 'Punto de Venta',
+        title: 'MiniPOS',
         darkTheme: theme.dark(),
         theme: theme.light(),
         themeMode: ThemeMode.system,

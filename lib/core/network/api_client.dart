@@ -81,6 +81,8 @@ class ApiClient {
       return await request().timeout(const Duration(seconds: 15));
     } on TimeoutException {
       throw const ApiException('El servidor tardo demasiado en responder.');
+    } on ApiException {
+      rethrow;
     } catch (_) {
       throw const ApiException('No se pudo conectar con el servidor.');
     }
@@ -95,7 +97,26 @@ class ApiClient {
   }
 
   Uri _uri(String path) {
-    return Uri.parse('$baseUrl$path');
+    final cleanBaseUrl = baseUrl.trim();
+
+    if (cleanBaseUrl.isEmpty) {
+      throw const ApiException(
+        'Configura API_BASE_URL para conectar con el servidor.',
+      );
+    }
+
+    final parsedBaseUrl = Uri.tryParse(cleanBaseUrl);
+    if (parsedBaseUrl == null ||
+        !parsedBaseUrl.hasScheme ||
+        !parsedBaseUrl.hasAuthority) {
+      throw const ApiException('API_BASE_URL no es una URL valida.');
+    }
+
+    final normalizedBaseUrl = cleanBaseUrl.endsWith('/')
+        ? cleanBaseUrl.substring(0, cleanBaseUrl.length - 1)
+        : cleanBaseUrl;
+
+    return Uri.parse('$normalizedBaseUrl$path');
   }
 
   Map<String, dynamic> _decodeMapResponse(http.Response response) {

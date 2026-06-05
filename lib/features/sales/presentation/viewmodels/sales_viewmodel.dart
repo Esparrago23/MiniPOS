@@ -1,5 +1,5 @@
-import 'package:app_prueba/features/products/domain/entities/product.dart';
-import 'package:app_prueba/features/products/domain/usecases/find_product_by_barcode_usecase.dart';
+import 'package:minipos/features/products/domain/entities/product.dart';
+import 'package:minipos/features/products/domain/usecases/find_product_by_barcode_usecase.dart';
 import 'package:flutter/foundation.dart';
 
 import '../../domain/entities/sale_cart_item.dart';

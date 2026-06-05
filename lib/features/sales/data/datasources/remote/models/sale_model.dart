@@ -1,4 +1,4 @@
-import 'package:app_prueba/features/sales/domain/entities/sale.dart';
+import 'package:minipos/features/sales/domain/entities/sale.dart';
 
 import 'sale_item_model.dart';
 
