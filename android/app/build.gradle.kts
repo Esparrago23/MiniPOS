@@ -4,7 +4,7 @@ plugins {
 }
 
 android {
-    namespace = "com.example.app_prueba"
+    namespace = "com.example.minipos"
     compileSdk = flutter.compileSdkVersion
     ndkVersion = flutter.ndkVersion
 
@@ -14,7 +14,7 @@ android {
     }
 
     defaultConfig {
-        applicationId = "com.example.app_prueba"
+        applicationId = "com.example.minipos"
         minSdk = flutter.minSdkVersion
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode

@@ -1,5 +1,5 @@
-import 'package:app_prueba/core/network/api_client.dart';
-import 'package:app_prueba/core/network/api_endpoints.dart';
+import 'package:minipos/core/network/api_client.dart';
+import 'package:minipos/core/network/api_endpoints.dart';
 
 import 'models/product_model.dart';
 

@@ -1,4 +1,4 @@
-import 'package:app_prueba/core/routes/app_routes.dart';
+import 'package:minipos/core/routes/app_routes.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
