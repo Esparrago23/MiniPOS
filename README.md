@@ -24,6 +24,16 @@ Aplicacion Flutter para administrar productos y registrar ventas en un punto de 
 - Flutter instalado.
 - API MiniPOS ejecutandose de forma local, en Docker o en un servidor.
 
+## Backend
+
+Esta app consume la API REST de MiniPOS.
+
+Repositorio de la API:
+
+```text
+https://github.com/Esparrago23/MiniPOS-API
+```
+
 ## Configurar API
 
 La app no tiene una URL hardcodeada. Debes pasar la URL del backend con `API_BASE_URL`.
@@ -75,4 +85,3 @@ flutter build apk --debug --dart-define=API_BASE_URL=http://IP_DEL_SERVIDOR:8000
 - `lib/features/products`: administracion y busqueda de productos.
 - `lib/features/sales`: flujo de venta.
 - `lib/shared`: tema visual compartido.
-
