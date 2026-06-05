@@ -1,9 +1,9 @@
-import 'package:app_prueba/core/network/api_client.dart';
-import 'package:app_prueba/core/storage/token_storage.dart';
-import 'package:app_prueba/features/sales/data/datasources/remote/sale_remote_datasource.dart';
-import 'package:app_prueba/features/sales/domain/entities/sale.dart';
-import 'package:app_prueba/features/sales/domain/entities/sale_cart_item.dart';
-import 'package:app_prueba/features/sales/domain/repositories/sale_repository.dart';
+import 'package:minipos/core/network/api_client.dart';
+import 'package:minipos/core/storage/token_storage.dart';
+import 'package:minipos/features/sales/data/datasources/remote/sale_remote_datasource.dart';
+import 'package:minipos/features/sales/domain/entities/sale.dart';
+import 'package:minipos/features/sales/domain/entities/sale_cart_item.dart';
+import 'package:minipos/features/sales/domain/repositories/sale_repository.dart';
 
 class SaleRepositoryImpl implements SaleRepository {
   const SaleRepositoryImpl({

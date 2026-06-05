@@ -1,5 +1,5 @@
-name: app_prueba
-description: "MiniPOS transactional Flutter app."
+name: minipos
+description: "Aplicacion Flutter para inventario y punto de venta."
 publish_to: 'none'
 version: 1.0.0+1
 

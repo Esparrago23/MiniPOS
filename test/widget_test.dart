@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:app_prueba/app.dart';
+import 'package:minipos/app.dart';
 
 void main() {
   testWidgets('Login page smoke test', (WidgetTester tester) async {

@@ -1,5 +1,5 @@
-import 'package:app_prueba/core/hardware/camera/barcode_scanner_page.dart';
-import 'package:app_prueba/core/hardware/camera/barcode_scanner_service.dart';
+import 'package:minipos/core/hardware/camera/barcode_scanner_page.dart';
+import 'package:minipos/core/hardware/camera/barcode_scanner_service.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 

@@ -1,7 +1,7 @@
-import 'package:app_prueba/core/storage/token_storage.dart';
-import 'package:app_prueba/features/auth/data/datasources/remote/auth_remote_datasource.dart';
-import 'package:app_prueba/features/auth/domain/entities/auth_session.dart';
-import 'package:app_prueba/features/auth/domain/repositories/auth_repository.dart';
+import 'package:minipos/core/storage/token_storage.dart';
+import 'package:minipos/features/auth/data/datasources/remote/auth_remote_datasource.dart';
+import 'package:minipos/features/auth/domain/entities/auth_session.dart';
+import 'package:minipos/features/auth/domain/repositories/auth_repository.dart';
 
 class AuthRepositoryImpl implements AuthRepository {
   final AuthRemoteDataSource remoteDataSource;

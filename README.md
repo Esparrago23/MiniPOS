@@ -1,17 +1,87 @@
-# app_prueba
+# MiniPOS
 
-A new Flutter project.
+Aplicacion Flutter para administrar productos y registrar ventas en un punto de venta pequeno. Se conecta con la API REST de MiniPOS para autenticacion, inventario y ventas.
 
-## Getting Started
+## Funcionalidades
 
-This project is a starting point for a Flutter application.
+- Registro e inicio de sesion.
+- Alta, consulta, edicion y eliminacion de productos.
+- Busqueda de productos por codigo de barras.
+- Escaneo con camara.
+- Carrito de venta con cantidades, subtotal y total.
+- Registro de ventas en la API.
+- Tema claro/oscuro con Material Design.
 
-A few resources to get you started if this is your first Flutter project:
+## Tecnologias
 
-- [Learn Flutter](https://docs.flutter.dev/get-started/learn-flutter)
-- [Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Flutter learning resources](https://docs.flutter.dev/reference/learning-resources)
+- Flutter y Dart.
+- Provider para manejo de estado.
+- HTTP para consumir la API REST.
+- mobile_scanner para lectura de codigos de barras.
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## Requisitos
+
+- Flutter instalado.
+- API MiniPOS ejecutandose de forma local, en Docker o en un servidor.
+
+## Backend
+
+Esta app consume la API REST de MiniPOS.
+
+Repositorio de la API:
+
+```text
+https://github.com/Esparrago23/MiniPOS-API
+```
+
+## Configurar API
+
+La app no tiene una URL hardcodeada. Debes pasar la URL del backend con `API_BASE_URL`.
+
+Para Flutter Web o pruebas desde la misma PC:
+
+```powershell
+flutter run --dart-define=API_BASE_URL=http://127.0.0.1:8000
+```
+
+Para Android Emulator:
+
+```powershell
+flutter run --dart-define=API_BASE_URL=http://10.0.2.2:8000
+```
+
+Para celular fisico:
+
+```powershell
+flutter run --dart-define=API_BASE_URL=http://IP_DEL_SERVIDOR:8000
+```
+
+## Generar APK de debug
+
+```powershell
+flutter build apk --debug --dart-define=API_BASE_URL=http://IP_DEL_SERVIDOR:8000
+```
+
+El APK queda en:
+
+```text
+build/app/outputs/flutter-apk/app-debug.apk
+```
+
+## Verificacion
+
+```powershell
+flutter clean
+flutter pub get
+flutter analyze
+flutter test
+flutter build apk --debug --dart-define=API_BASE_URL=http://IP_DEL_SERVIDOR:8000
+```
+
+## Estructura
+
+- `lib/core`: rutas, red, almacenamiento, dependencias y hardware.
+- `lib/features/auth`: autenticacion.
+- `lib/features/products`: administracion y busqueda de productos.
+- `lib/features/sales`: flujo de venta.
+- `lib/shared`: tema visual compartido.

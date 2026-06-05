@@ -1,5 +1,5 @@
-import 'package:app_prueba/core/routes/app_routes.dart';
-import 'package:app_prueba/features/auth/presentation/viewmodels/auth_viewmodel.dart';
+import 'package:minipos/core/routes/app_routes.dart';
+import 'package:minipos/features/auth/presentation/viewmodels/auth_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
